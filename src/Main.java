@@ -1,17 +1,32 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Clase Main
+ * Punto de entrada del sistema de gestion de biblioteca.
+ * Controla la interaccion con el usuario mediante un menu en consola.
+ */
 public class Main {
 
+    // Objeto Scanner para capturar datos desde teclado
     static Scanner scanner = new Scanner(System.in);
+
+    // Instancia unica de la biblioteca
     static Biblioteca biblioteca = new Biblioteca();
 
+    /**
+     * Metodo principal del programa.
+     * Ejecuta el menu hasta que el usuario decida salir.
+     */
     public static void main(String[] args) {
+
         System.out.println("=========================================");
         System.out.println("  SISTEMA DE GESTION DE BIBLIOTECA");
         System.out.println("=========================================\n");
 
         int opcion = -1;
+
+        // Ciclo principal del sistema
         while (opcion != 0) {
             mostrarMenu();
             try {
@@ -21,10 +36,14 @@ public class Main {
             }
             procesarOpcion(opcion);
         }
+
         System.out.println("\nSistema cerrado. Hasta pronto!");
         scanner.close();
     }
 
+    /**
+     * Muestra el menu principal en consola.
+     */
     static void mostrarMenu() {
         System.out.println("\n========== MENU PRINCIPAL ==========");
         System.out.println("  LIBROS");
@@ -47,18 +66,21 @@ public class Main {
         System.out.print("  Seleccione una opcion: ");
     }
 
+    /**
+     * Ejecuta la opcion seleccionada por el usuario.
+     */
     static void procesarOpcion(int opcion) {
         switch (opcion) {
-            case 1:  menuRegistrarLibro();      break;
-            case 2:  menuBuscarLibro();         break;
+            case 1:  menuRegistrarLibro(); break;
+            case 2:  menuBuscarLibro(); break;
             case 3:  biblioteca.listarLibros(); break;
-            case 4:  menuRegistrarUsuario();    break;
-            case 5:  menuBuscarUsuario();       break;
+            case 4:  menuRegistrarUsuario(); break;
+            case 5:  menuBuscarUsuario(); break;
             case 6:  biblioteca.listarUsuarios(); break;
-            case 7:  menuRealizarPrestamo();    break;
+            case 7:  menuRealizarPrestamo(); break;
             case 8:  menuRegistrarDevolucion(); break;
-            case 9:  menuPrestamosActivos();    break;
-            case 10: menuPrestamosVencidos();   break;
+            case 9:  menuPrestamosActivos(); break;
+            case 10: menuPrestamosVencidos(); break;
             case 11: biblioteca.generarReporteGeneral(); break;
             case 0:  break;
             default:
@@ -66,57 +88,97 @@ public class Main {
         }
     }
 
+    /**
+     * Solicita datos para registrar un nuevo libro.
+     */
     static void menuRegistrarLibro() {
+
         System.out.println("\n--- REGISTRAR LIBRO ---");
+
         System.out.print("  ISBN (10 o 13 digitos): ");
         String isbn = scanner.nextLine().trim();
+
         System.out.print("  Titulo: ");
         String titulo = scanner.nextLine().trim();
+
         System.out.print("  Autor: ");
         String autor = scanner.nextLine().trim();
+
         System.out.print("  Editorial: ");
         String editorial = scanner.nextLine().trim();
+
         System.out.print("  Anio de publicacion: ");
         int anio = 0;
-        try { anio = Integer.parseInt(scanner.nextLine().trim()); }
-        catch (NumberFormatException e) { System.out.println("  [Error] Anio invalido."); return; }
+        try {
+            anio = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("  [Error] Anio invalido.");
+            return;
+        }
+
         System.out.print("  Categoria: ");
         String categoria = scanner.nextLine().trim();
+
         System.out.print("  Numero de ejemplares: ");
         int ejemplares = 0;
-        try { ejemplares = Integer.parseInt(scanner.nextLine().trim()); }
-        catch (NumberFormatException e) { System.out.println("  [Error] Numero invalido."); return; }
+        try {
+            ejemplares = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("  [Error] Numero invalido.");
+            return;
+        }
 
         if (titulo.isEmpty() || autor.isEmpty()) {
             System.out.println("  [Error] Titulo y autor son obligatorios.");
             return;
         }
-        biblioteca.registrarLibro(new Libro(isbn, titulo, autor, editorial, anio, categoria, ejemplares));
+
+        biblioteca.registrarLibro(
+                new Libro(isbn, titulo, autor, editorial, anio, categoria, ejemplares)
+        );
     }
 
+    /**
+     * Permite buscar libros por titulo, autor o categoria.
+     */
     static void menuBuscarLibro() {
+
         System.out.println("\n--- BUSCAR LIBRO ---");
+
         System.out.print("  Ingrese titulo, autor o categoria: ");
         String criterio = scanner.nextLine().trim();
+
         ArrayList<Libro> resultados = biblioteca.buscarLibro(criterio);
+
         if (resultados.isEmpty()) {
             System.out.println("  No se encontraron libros con: " + criterio);
         } else {
             System.out.println("  Resultados encontrados: " + resultados.size());
-            for (Libro l : resultados) l.mostrarInformacion();
+            for (Libro l : resultados) {
+                l.mostrarInformacion();
+            }
         }
     }
 
+    /**
+     * Solicita datos para registrar un nuevo usuario.
+     */
     static void menuRegistrarUsuario() {
+
         System.out.println("\n--- REGISTRAR USUARIO ---");
+
         System.out.print("  Numero de identificacion: ");
         String id = scanner.nextLine().trim();
+
         System.out.print("  Nombre completo: ");
         String nombre = scanner.nextLine().trim();
+
         System.out.print("  Correo electronico: ");
         String correo = scanner.nextLine().trim();
+
         System.out.print("  Telefono: ");
         String telefono = scanner.nextLine().trim();
+
         System.out.print("  Direccion: ");
         String direccion = scanner.nextLine().trim();
 
@@ -124,14 +186,24 @@ public class Main {
             System.out.println("  [Error] ID y nombre son obligatorios.");
             return;
         }
-        biblioteca.registrarUsuario(new Usuario(id, nombre, correo, telefono, direccion));
+
+        biblioteca.registrarUsuario(
+                new Usuario(id, nombre, correo, telefono, direccion)
+        );
     }
 
+    /**
+     * Permite buscar un usuario por ID o nombre.
+     */
     static void menuBuscarUsuario() {
+
         System.out.println("\n--- BUSCAR USUARIO ---");
+
         System.out.print("  Ingrese ID o nombre del usuario: ");
         String criterio = scanner.nextLine().trim();
+
         Usuario usuario = biblioteca.buscarUsuario(criterio);
+
         if (usuario == null) {
             System.out.println("  No se encontro usuario con: " + criterio);
         } else {
@@ -139,17 +211,29 @@ public class Main {
         }
     }
 
+    /**
+     * Solicita datos para realizar un prestamo.
+     */
     static void menuRealizarPrestamo() {
+
         System.out.println("\n--- REALIZAR PRESTAMO ---");
+
         System.out.print("  ISBN del libro: ");
         String isbn = scanner.nextLine().trim();
+
         System.out.print("  ID del usuario: ");
         String idUsuario = scanner.nextLine().trim();
+
         biblioteca.realizarPrestamo(isbn, idUsuario);
     }
 
+    /**
+     * Registra la devolucion de un prestamo mediante su ID.
+     */
     static void menuRegistrarDevolucion() {
+
         System.out.println("\n--- REGISTRAR DEVOLUCION ---");
+
         System.out.print("  ID del prestamo: ");
         try {
             int idPrestamo = Integer.parseInt(scanner.nextLine().trim());
@@ -159,23 +243,39 @@ public class Main {
         }
     }
 
+    /**
+     * Muestra todos los prestamos activos.
+     */
     static void menuPrestamosActivos() {
+
         ArrayList<Prestamo> activos = biblioteca.listarPrestamosActivos();
+
         System.out.println("\n===== PRESTAMOS ACTIVOS (" + activos.size() + ") =====");
+
         if (activos.isEmpty()) {
             System.out.println("  No hay prestamos activos.");
         } else {
-            for (Prestamo p : activos) p.mostrarInformacion();
+            for (Prestamo p : activos) {
+                p.mostrarInformacion();
+            }
         }
     }
 
+    /**
+     * Muestra todos los prestamos vencidos.
+     */
     static void menuPrestamosVencidos() {
+
         ArrayList<Prestamo> vencidos = biblioteca.listarPrestamosVencidos();
+
         System.out.println("\n===== PRESTAMOS VENCIDOS (" + vencidos.size() + ") =====");
+
         if (vencidos.isEmpty()) {
             System.out.println("  No hay prestamos vencidos.");
         } else {
-            for (Prestamo p : vencidos) p.mostrarInformacion();
+            for (Prestamo p : vencidos) {
+                p.mostrarInformacion();
+            }
         }
     }
 }
